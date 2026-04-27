@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Cloning : MonoBehaviour
 {
+    public GameObject Player;
     public List<GameObject> affectedCubes = new List<GameObject>();
     public List<GameObject> childrenOfAffectedCubes = new List<GameObject>();
 
@@ -12,6 +13,8 @@ public class Cloning : MonoBehaviour
 
     public GameObject myParent;
 
+    [SerializeField] private Vector3 lastDropped;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,12 +22,27 @@ public class Cloning : MonoBehaviour
         {
             cubeTime = Timeline.Future;
         }
+        if (myParent == null) //this is only used for the first cube that cant go to the future
+        {
+            lastDropped = transform.position;
+        }
+        if (Player == null)
+        {
+            Player = GameObject.FindGameObjectWithTag("Player");
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+
+        if (myParent == null && transform.position.y < -25)
+        {
+            Player.GetComponent<HoldObj>().ReleaseCube(); //the original cube travels back to last dropped position if goes to future
+            transform.position = lastDropped; //the original cube travels back to last dropped position if goes to future
+
+            Debug.Log("Original was in future!");
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -47,21 +65,22 @@ public class Cloning : MonoBehaviour
                 {
                     CreateCube();
                 }
+
+                if (myParent == null) //last position of the original cube that it will travel back to if put in the future
+                {
+                    lastDropped = transform.position;
+                }
             }
             
         }
 
-        if(collision.gameObject.CompareTag("Future"))
+        if(collision.gameObject.CompareTag("Future") && myParent != null)
         {
             if(cubeTime == Timeline.Past)
             {
                 cubeTime = Timeline.Future;
 
                 BecomeOriginal();
-            }
-            if(myParent == null)
-            {
-                Debug.LogError("Original in future!");
             }
         }
     }

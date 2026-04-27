@@ -51,11 +51,7 @@ public class HoldObj : MonoBehaviour
         }
         if(playerInputSys.Player.Grab.WasReleasedThisFrame() && grabbedObj != null)
         {
-            holdCollider.enabled = false;
-            grabbedObj.transform.SetParent(null);
-            grabbedObj.transform.localScale = Vector3.one;
-            grabbedObj.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-            grabbedObj = null;
+            ReleaseCube();
         }
     }
 
@@ -76,5 +72,14 @@ public class HoldObj : MonoBehaviour
             }
         }
         return closest;
+    }
+
+    public void ReleaseCube()
+    {
+        holdCollider.enabled = false;
+        grabbedObj.transform.SetParent(null);
+        grabbedObj.transform.localScale = Vector3.one;
+        grabbedObj.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        grabbedObj = null;
     }
 }
