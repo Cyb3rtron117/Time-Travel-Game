@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Ground
   - MovableObj
+  - Future
+  - Past
+  - GameManager
   layers:
   - Default
   - TransparentFX
