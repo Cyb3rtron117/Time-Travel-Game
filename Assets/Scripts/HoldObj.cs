@@ -6,6 +6,7 @@ public class HoldObj : MonoBehaviour
     public GameObject grabbedObj = null;
     public GameObject holdPos;
     public BoxCollider2D holdCollider;
+    [SerializeField] private float detectRadius = 2f;
 
     void Awake()
     {
@@ -31,10 +32,10 @@ public class HoldObj : MonoBehaviour
     void FixedUpdate()
     {
         
-        if (playerInputSys.Player.Grab.WasPressedThisFrame())
+        if (playerInputSys.Player.Grab.WasPressedThisFrame() && grabbedObj == null)
         {
             //print("pressed");
-            grabbedObj = GetClosestCollider(gameObject.GetComponent<CircleCollider2D>().radius);
+            grabbedObj = GetClosestCollider(detectRadius);
         }
 
         if(playerInputSys.Player.Grab.IsPressed() && grabbedObj != null)
@@ -81,5 +82,11 @@ public class HoldObj : MonoBehaviour
         grabbedObj.transform.localScale = Vector3.one;
         grabbedObj.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         grabbedObj = null;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, detectRadius);
+        Gizmos.color = Color.yellow;
     }
 }
